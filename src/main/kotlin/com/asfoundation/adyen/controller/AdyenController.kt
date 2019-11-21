@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.math.BigDecimal
 
 @RestController
 class AdyenController {
@@ -17,13 +18,13 @@ class AdyenController {
     lateinit var adyenService: AdyenService
 
     @GetMapping("methods")
-    fun getPaymentMethods(@RequestParam("value") value: String, @RequestParam("currency") currency: String): PaymentMethodsResponse {
+    fun getPaymentMethods(@RequestParam("value") value: BigDecimal, @RequestParam("currency") currency: String): PaymentMethodsResponse {
         return adyenService.getPaymentMethods(value, currency)
     }
 
     @PostMapping("payment")
     fun makePayment(
-            @RequestParam(value = "value", required = true) value: String,
+            @RequestParam(value = "value", required = true) value: BigDecimal,
             @RequestParam(value = "currency", required = true) currency: String,
             @RequestParam(value = "encrypted_card_number") encryptedCardNumber: String?,
             @RequestParam(value = "encrypted_expiry_month") encryptedExpiryMonth: String?,
@@ -46,6 +47,14 @@ class AdyenController {
                 redirectUrl,
                 storeDetails
         )
+    }
+
+    @PostMapping("payment/details")
+    fun updatePayment(
+            @RequestParam(value = "payload", required = true) payload: String,
+            @RequestParam(value = "payment_data", required = true) paymentData: String
+    ): PaymentResult {
+        return adyenService.updatePayment(payload, paymentData)
     }
 
 }

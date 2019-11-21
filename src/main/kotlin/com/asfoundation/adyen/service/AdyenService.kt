@@ -6,7 +6,6 @@ import com.adyen.model.Amount
 import com.adyen.model.checkout.*
 import com.adyen.service.Checkout
 import com.asfoundation.adyen.config.AppProperties
-import com.asfoundation.adyen.model.PaymentAction
 import com.asfoundation.adyen.model.PaymentMethodType
 import com.asfoundation.adyen.model.PaymentResult
 import com.asfoundation.adyen.validator.CreditCardValidator
@@ -28,7 +27,7 @@ class AdyenService {
     @Autowired
     lateinit var payPalValidator: PayPalValidator
 
-    fun getPaymentMethods(value: String, currency: String): PaymentMethodsResponse {
+    fun getPaymentMethods(value: BigDecimal, currency: String): PaymentMethodsResponse {
         val client = Client(appProperties.apiKey, Environment.TEST)
 
         val checkout = Checkout(client)
@@ -37,14 +36,14 @@ class AdyenService {
         paymentMethodsRequest.countryCode = "PT"
         val amount = Amount()
         amount.currency = currency
-        amount.value = BigDecimal(value).toLong()
+        amount.value = value.multiply(100.toBigDecimal()).toLong()
         paymentMethodsRequest.amount = amount
         paymentMethodsRequest.channel = PaymentMethodsRequest.ChannelEnum.ANDROID
         return checkout.paymentMethods(paymentMethodsRequest)
     }
 
     fun makePayment(
-            value: String,
+            value: BigDecimal,
             currency: String,
             encryptedCardNumber: String?,
             encryptedExpiryMonth: String?,
@@ -62,7 +61,7 @@ class AdyenService {
     }
 
     private fun createCreditCardPayment(
-            value: String,
+            value: BigDecimal,
             currency: String,
             encryptedCardNumber: String,
             encryptedExpiryMonth: String,
@@ -81,7 +80,7 @@ class AdyenService {
 
         val amount = Amount()
         amount.currency = currency
-        amount.value = BigDecimal(value).toLong()
+        amount.value = value.multiply(100.toBigDecimal()).toLong()
 
         paymentsRequest.amount = amount
         paymentsRequest.reference = reference
@@ -97,11 +96,10 @@ class AdyenService {
     }
 
     private fun createPayPalResponse(paymentsResponse: PaymentsResponse): PaymentResult {
-        val action = PaymentAction(paymentsResponse.action.url, paymentsResponse.action.paymentData)
-        return PaymentResult(paymentsResponse.resultCode.name, paymentsResponse.refusalReason, paymentsResponse.refusalReasonCode, action)
+        return PaymentResult(paymentsResponse.resultCode.name, paymentsResponse.refusalReason, paymentsResponse.refusalReasonCode, paymentsResponse.action)
     }
 
-    private fun createPayPalPayment(value: String, currency: String, reference: String, redirectUrl: String): PaymentResult {
+    private fun createPayPalPayment(value: BigDecimal, currency: String, reference: String, redirectUrl: String): PaymentResult {
         payPalValidator.validatePayPalFields(redirectUrl)
 
         val client = Client(appProperties.apiKey, Environment.TEST)
@@ -112,7 +110,7 @@ class AdyenService {
 
         val amount = Amount()
         amount.currency = currency
-        amount.value = BigDecimal(value).toLong()
+        amount.value = value.multiply(100.toBigDecimal()).toLong()
 
         paymentsRequest.amount = amount
         paymentsRequest.reference = reference
@@ -123,6 +121,21 @@ class AdyenService {
 
         paymentsRequest.returnUrl = redirectUrl
         val paymentsResponse = checkout.payments(paymentsRequest)
+        return createPayPalResponse(paymentsResponse)
+    }
+
+    fun updatePayment(payload: String, paymentData: String): PaymentResult {
+        val client = Client(appProperties.apiKey, Environment.TEST)
+        val checkout = Checkout(client)
+
+        val details = HashMap<String, String>()
+        details["payload"] = payload
+
+        val paymentsDetailsRequest = PaymentsDetailsRequest()
+        paymentsDetailsRequest.details = details
+        paymentsDetailsRequest.paymentData = paymentData
+
+        val paymentsResponse = checkout.paymentsDetails(paymentsDetailsRequest)
         return createPayPalResponse(paymentsResponse)
     }
 
