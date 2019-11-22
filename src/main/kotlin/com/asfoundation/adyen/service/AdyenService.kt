@@ -55,18 +55,18 @@ class AdyenService {
             storeDetails: Boolean?
     ): PaymentResult {
         return when (paymentMethodType) {
-            PaymentMethodType.CREDIT_CARD -> createCreditCardPayment(value, currency, encryptedCardNumber!!, encryptedExpiryMonth!!, encryptedExpiryYear!!, encryptedSecurityCode!!, reference, storeDetails)
-            PaymentMethodType.PAYPAL -> createPayPalPayment(value, currency, reference, redirectUrl!!)
+            PaymentMethodType.CREDIT_CARD -> createCreditCardPayment(value, currency, encryptedCardNumber, encryptedExpiryMonth, encryptedExpiryYear, encryptedSecurityCode, reference, storeDetails)
+            PaymentMethodType.PAYPAL -> createPayPalPayment(value, currency, reference, redirectUrl)
         }
     }
 
     private fun createCreditCardPayment(
             value: BigDecimal,
             currency: String,
-            encryptedCardNumber: String,
-            encryptedExpiryMonth: String,
-            encryptedExpiryYear: String,
-            encryptedSecurityCode: String,
+            encryptedCardNumber: String?,
+            encryptedExpiryMonth: String?,
+            encryptedExpiryYear: String?,
+            encryptedSecurityCode: String?,
             reference: String,
             storeDetails: Boolean?
     ): PaymentResult {
@@ -99,7 +99,7 @@ class AdyenService {
         return PaymentResult(paymentsResponse.resultCode.name, paymentsResponse.refusalReason, paymentsResponse.refusalReasonCode, paymentsResponse.action)
     }
 
-    private fun createPayPalPayment(value: BigDecimal, currency: String, reference: String, redirectUrl: String): PaymentResult {
+    private fun createPayPalPayment(value: BigDecimal, currency: String, reference: String, redirectUrl: String?): PaymentResult {
         payPalValidator.validatePayPalFields(redirectUrl)
 
         val client = Client(appProperties.apiKey, Environment.TEST)
