@@ -6,10 +6,12 @@ import com.adyen.model.Amount
 import com.adyen.model.checkout.*
 import com.adyen.service.Checkout
 import com.asfoundation.adyen.config.AppProperties
+import com.asfoundation.adyen.model.PayPalData
 import com.asfoundation.adyen.model.PaymentMethodType
 import com.asfoundation.adyen.model.PaymentResult
 import com.asfoundation.adyen.validator.CreditCardValidator
 import com.asfoundation.adyen.validator.PayPalValidator
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -26,6 +28,8 @@ class AdyenService {
 
     @Autowired
     lateinit var payPalValidator: PayPalValidator
+
+    val objectMapper = ObjectMapper()
 
     fun getPaymentMethods(value: BigDecimal, currency: String): PaymentMethodsResponse {
         val client = Client(appProperties.apiKey, Environment.TEST)
@@ -128,8 +132,10 @@ class AdyenService {
         val client = Client(appProperties.apiKey, Environment.TEST)
         val checkout = Checkout(client)
 
+        val payPalResponse = objectMapper.readValue(payload, PayPalData::class.java)
+
         val details = HashMap<String, String>()
-        details["payload"] = payload
+        details["payload"] = payPalResponse.payload
 
         val paymentsDetailsRequest = PaymentsDetailsRequest()
         paymentsDetailsRequest.details = details
