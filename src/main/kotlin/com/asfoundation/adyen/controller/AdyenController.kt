@@ -5,10 +5,9 @@ import com.asfoundation.adyen.model.PaymentMethodType
 import com.asfoundation.adyen.model.PaymentResult
 import com.asfoundation.adyen.service.AdyenService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.MediaType
+import org.springframework.util.MultiValueMap
+import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
 
 @RestController
@@ -49,12 +48,9 @@ class AdyenController {
         )
     }
 
-    @PostMapping("payment/details")
-    fun updatePayment(
-            @RequestParam(value = "payload", required = true) payload: String,
-            @RequestParam(value = "payment_data", required = true) paymentData: String
-    ): PaymentResult {
-        return adyenService.updatePayment(payload, paymentData)
+    @PostMapping("payment/details", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun updatePayment(@RequestBody body: MultiValueMap<String, String>): PaymentResult {
+        return adyenService.updatePayment(body)
     }
 
 }

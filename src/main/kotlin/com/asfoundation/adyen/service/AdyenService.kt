@@ -6,7 +6,6 @@ import com.adyen.model.Amount
 import com.adyen.model.checkout.*
 import com.adyen.service.Checkout
 import com.asfoundation.adyen.config.AppProperties
-import com.asfoundation.adyen.model.PayPalData
 import com.asfoundation.adyen.model.PaymentMethodType
 import com.asfoundation.adyen.model.PaymentResult
 import com.asfoundation.adyen.validator.CreditCardValidator
@@ -14,6 +13,7 @@ import com.asfoundation.adyen.validator.PayPalValidator
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.util.MultiValueMap
 import java.math.BigDecimal
 
 
@@ -128,18 +128,17 @@ class AdyenService {
         return createPayPalResponse(paymentsResponse)
     }
 
-    fun updatePayment(payload: String, paymentData: String): PaymentResult {
+    fun updatePayment(body: MultiValueMap<String, String>): PaymentResult {
+        payPalValidator.validateUpdatePayment(body)
         val client = Client(appProperties.apiKey, Environment.TEST)
         val checkout = Checkout(client)
 
-        val payPalResponse = objectMapper.readValue(payload, PayPalData::class.java)
-
         val details = HashMap<String, String>()
-        details["payload"] = payPalResponse.payload
+        details["payload"] = body.getFirst("payload") as String
 
         val paymentsDetailsRequest = PaymentsDetailsRequest()
         paymentsDetailsRequest.details = details
-        paymentsDetailsRequest.paymentData = paymentData
+        paymentsDetailsRequest.paymentData = body.getFirst("payment_data")
 
         val paymentsResponse = checkout.paymentsDetails(paymentsDetailsRequest)
         return createPayPalResponse(paymentsResponse)
