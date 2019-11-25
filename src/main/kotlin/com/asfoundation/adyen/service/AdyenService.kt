@@ -20,18 +20,24 @@ class AdyenService {
     @Autowired
     lateinit var appProperties: AppProperties
 
-    fun getPaymentMethods(value: BigDecimal, currency: String): PaymentMethodsResponse {
+    fun getPaymentMethods(value: BigDecimal, currency: String, walletAddress: String?): PaymentMethodsResponse {
         val client = Client(appProperties.apiKey, Environment.TEST)
-
         val checkout = Checkout(client)
+
         val paymentMethodsRequest = PaymentMethodsRequest()
         paymentMethodsRequest.merchantAccount = appProperties.apiMerchant
         paymentMethodsRequest.countryCode = "PT"
+        paymentMethodsRequest.channel = PaymentMethodsRequest.ChannelEnum.ANDROID
+
+        walletAddress?.let {
+            paymentMethodsRequest.shopperReference = it
+        }
+
         val amount = Amount()
         amount.currency = currency
         amount.value = value.multiply(100.toBigDecimal()).toLong()
         paymentMethodsRequest.amount = amount
-        paymentMethodsRequest.channel = PaymentMethodsRequest.ChannelEnum.ANDROID
+
         return checkout.paymentMethods(paymentMethodsRequest)
     }
 
@@ -45,11 +51,11 @@ class AdyenService {
             paymentMethodType: PaymentMethodType,
             reference: String,
             redirectUrl: String?,
-            storeDetails: Boolean?,
-            shopperReference: String?
+            walletAddress: String?,
+            token: String?
     ): PaymentResult {
         return when (paymentMethodType) {
-            PaymentMethodType.CREDIT_CARD -> createCreditCardPayment(value, currency, encryptedCardNumber, encryptedExpiryMonth, encryptedExpiryYear, encryptedSecurityCode, reference, storeDetails, shopperReference)
+            PaymentMethodType.CREDIT_CARD -> createCreditCardPayment(value, currency, encryptedCardNumber, encryptedExpiryMonth, encryptedExpiryYear, encryptedSecurityCode, reference, walletAddress, token)
             PaymentMethodType.PAYPAL -> createPayPalPayment(value, currency, reference, redirectUrl)
         }
     }
@@ -62,28 +68,36 @@ class AdyenService {
             encryptedExpiryYear: String?,
             encryptedSecurityCode: String?,
             reference: String,
-            storeDetails: Boolean?,
-            shopperReference: String?
+            walletAddress: String?,
+            recurringDetailReference: String?
     ): PaymentResult {
         val client = Client(appProperties.apiKey, Environment.TEST)
         val checkout = Checkout(client)
 
         val paymentsRequest = PaymentsRequest()
         paymentsRequest.merchantAccount = appProperties.apiMerchant
+        paymentsRequest.reference = reference
+        paymentsRequest.addEncryptedCardData(
+                encryptedCardNumber,
+                encryptedExpiryMonth,
+                encryptedExpiryYear,
+                encryptedSecurityCode,
+                HOLDER_NAME,
+                walletAddress != null
+        )
 
-        shopperReference?.let {
-            paymentsRequest.shopperReference = it
+        paymentsRequest.shopperReference = walletAddress
+
+        if (walletAddress != null && recurringDetailReference != null) {
+            paymentsRequest.shopperInteraction = PaymentsRequest.ShopperInteractionEnum.CONTAUTH
             paymentsRequest.recurringProcessingModel = PaymentsRequest.RecurringProcessingModelEnum.CARD_ON_FILE
+            (paymentsRequest.paymentMethod as DefaultPaymentMethodDetails).recurringDetailReference = recurringDetailReference
         }
 
         val amount = Amount()
         amount.currency = currency
         amount.value = value.multiply(100.toBigDecimal()).toLong()
-
         paymentsRequest.amount = amount
-        paymentsRequest.reference = reference
-        paymentsRequest.addEncryptedCardData(encryptedCardNumber, encryptedExpiryMonth, encryptedExpiryYear, encryptedSecurityCode, HOLDER_NAME, storeDetails
-                ?: false)
 
         val paymentsResponse = checkout.payments(paymentsRequest)
         return createCreditCardResponse(paymentsResponse)
@@ -94,7 +108,6 @@ class AdyenService {
                 resultCode = paymentsResponse.resultCode.name,
                 refusalReason = paymentsResponse.refusalReason,
                 refusalReasonCode = paymentsResponse.refusalReasonCode,
-                token = paymentsResponse.additionalData["recurring.recurringDetailReference"],
                 p2pReference = paymentsResponse.pspReference
         )
     }

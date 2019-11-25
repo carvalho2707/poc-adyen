@@ -17,8 +17,12 @@ class AdyenController {
     lateinit var adyenService: AdyenService
 
     @GetMapping("methods")
-    fun getPaymentMethods(@RequestParam("value") value: BigDecimal, @RequestParam("currency") currency: String): PaymentMethodsResponse {
-        return adyenService.getPaymentMethods(value, currency)
+    fun getPaymentMethods(
+            @RequestParam("value") value: BigDecimal,
+            @RequestParam("currency") currency: String,
+            @RequestParam("wallet.address") walletAddress: String?
+    ): PaymentMethodsResponse? {
+        return adyenService.getPaymentMethods(value, currency, walletAddress)
     }
 
     @PostMapping("payment")
@@ -32,8 +36,8 @@ class AdyenController {
             @RequestParam(value = "reference", required = true) reference: String,
             @RequestParam(value = "type", required = true) type: PaymentMethodType,
             @RequestParam(value = "redirect_url") redirectUrl: String?,
-            @RequestParam(value = "store_details") storeDetails: Boolean?,
-            @RequestParam(value = "shopper_reference") shopperReference: String?
+            @RequestParam(value = "wallet.address") walletAddress: String?,
+            @RequestParam(value = "token") token: String?
     ): PaymentResult {
         return adyenService.makePayment(
                 value,
@@ -45,8 +49,8 @@ class AdyenController {
                 type,
                 reference,
                 redirectUrl,
-                storeDetails,
-                shopperReference
+                walletAddress,
+                token
         )
     }
 

@@ -7,6 +7,5 @@ data class PaymentResult(
         val refusalReason: String? = null,
         val refusalReasonCode: String? = null,
         val action: CheckoutPaymentsAction? = null,
-        val token: String? = null,
         val p2pReference: String? = null
 )
