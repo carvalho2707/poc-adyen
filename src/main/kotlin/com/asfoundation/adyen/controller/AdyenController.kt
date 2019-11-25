@@ -32,7 +32,8 @@ class AdyenController {
             @RequestParam(value = "reference", required = true) reference: String,
             @RequestParam(value = "type", required = true) type: PaymentMethodType,
             @RequestParam(value = "redirect_url") redirectUrl: String?,
-            @RequestParam(value = "store_details") storeDetails: Boolean?
+            @RequestParam(value = "store_details") storeDetails: Boolean?,
+            @RequestParam(value = "shopper_reference") shopperReference: String?
     ): PaymentResult {
         return adyenService.makePayment(
                 value,
@@ -44,7 +45,8 @@ class AdyenController {
                 type,
                 reference,
                 redirectUrl,
-                storeDetails
+                storeDetails,
+                shopperReference
         )
     }
 

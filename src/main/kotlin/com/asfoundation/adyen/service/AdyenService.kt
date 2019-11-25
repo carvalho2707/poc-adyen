@@ -8,9 +8,6 @@ import com.adyen.service.Checkout
 import com.asfoundation.adyen.config.AppProperties
 import com.asfoundation.adyen.model.PaymentMethodType
 import com.asfoundation.adyen.model.PaymentResult
-import com.asfoundation.adyen.validator.CreditCardValidator
-import com.asfoundation.adyen.validator.PayPalValidator
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
@@ -22,14 +19,6 @@ class AdyenService {
 
     @Autowired
     lateinit var appProperties: AppProperties
-
-    @Autowired
-    lateinit var cardValidator: CreditCardValidator
-
-    @Autowired
-    lateinit var payPalValidator: PayPalValidator
-
-    val objectMapper = ObjectMapper()
 
     fun getPaymentMethods(value: BigDecimal, currency: String): PaymentMethodsResponse {
         val client = Client(appProperties.apiKey, Environment.TEST)
@@ -56,10 +45,11 @@ class AdyenService {
             paymentMethodType: PaymentMethodType,
             reference: String,
             redirectUrl: String?,
-            storeDetails: Boolean?
+            storeDetails: Boolean?,
+            shopperReference: String?
     ): PaymentResult {
         return when (paymentMethodType) {
-            PaymentMethodType.CREDIT_CARD -> createCreditCardPayment(value, currency, encryptedCardNumber, encryptedExpiryMonth, encryptedExpiryYear, encryptedSecurityCode, reference, storeDetails)
+            PaymentMethodType.CREDIT_CARD -> createCreditCardPayment(value, currency, encryptedCardNumber, encryptedExpiryMonth, encryptedExpiryYear, encryptedSecurityCode, reference, storeDetails, shopperReference)
             PaymentMethodType.PAYPAL -> createPayPalPayment(value, currency, reference, redirectUrl)
         }
     }
@@ -72,15 +62,19 @@ class AdyenService {
             encryptedExpiryYear: String?,
             encryptedSecurityCode: String?,
             reference: String,
-            storeDetails: Boolean?
+            storeDetails: Boolean?,
+            shopperReference: String?
     ): PaymentResult {
-        cardValidator.validateCreditCardFields(encryptedCardNumber, encryptedExpiryMonth, encryptedExpiryYear, encryptedSecurityCode)
-
         val client = Client(appProperties.apiKey, Environment.TEST)
         val checkout = Checkout(client)
 
         val paymentsRequest = PaymentsRequest()
         paymentsRequest.merchantAccount = appProperties.apiMerchant
+
+        shopperReference?.let {
+            paymentsRequest.shopperReference = it
+            paymentsRequest.recurringProcessingModel = PaymentsRequest.RecurringProcessingModelEnum.CARD_ON_FILE
+        }
 
         val amount = Amount()
         amount.currency = currency
@@ -96,16 +90,26 @@ class AdyenService {
     }
 
     private fun createCreditCardResponse(paymentsResponse: PaymentsResponse): PaymentResult {
-        return PaymentResult(paymentsResponse.resultCode.name, paymentsResponse.refusalReason, paymentsResponse.refusalReasonCode)
+        return PaymentResult(
+                resultCode = paymentsResponse.resultCode.name,
+                refusalReason = paymentsResponse.refusalReason,
+                refusalReasonCode = paymentsResponse.refusalReasonCode,
+                token = paymentsResponse.additionalData["recurring.recurringDetailReference"],
+                p2pReference = paymentsResponse.pspReference
+        )
     }
 
     private fun createPayPalResponse(paymentsResponse: PaymentsResponse): PaymentResult {
-        return PaymentResult(paymentsResponse.resultCode.name, paymentsResponse.refusalReason, paymentsResponse.refusalReasonCode, paymentsResponse.action)
+        return PaymentResult(
+                resultCode = paymentsResponse.resultCode.name,
+                refusalReason = paymentsResponse.refusalReason,
+                refusalReasonCode = paymentsResponse.refusalReasonCode,
+                action = paymentsResponse.action,
+                p2pReference = paymentsResponse.pspReference
+        )
     }
 
     private fun createPayPalPayment(value: BigDecimal, currency: String, reference: String, redirectUrl: String?): PaymentResult {
-        payPalValidator.validatePayPalFields(redirectUrl)
-
         val client = Client(appProperties.apiKey, Environment.TEST)
         val checkout = Checkout(client)
 
@@ -129,7 +133,6 @@ class AdyenService {
     }
 
     fun updatePayment(body: MultiValueMap<String, String>): PaymentResult {
-        payPalValidator.validateUpdatePayment(body)
         val client = Client(appProperties.apiKey, Environment.TEST)
         val checkout = Checkout(client)
 
