@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/adyen/methods?value=1.5123456&currency=EUR",
+					"raw": "http://localhost:8080/adyen/methods?value=1.5123456&currency=EUR&wallet.address=0xeee63a4843c9e344c316fa4a056352491cdc9b03",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -29,6 +29,10 @@
 						{
 							"key": "currency",
 							"value": "EUR"
+						},
+						{
+							"key": "wallet.address",
+							"value": "0xeee63a4843c9e344c316fa4a056352491cdc9b03"
 						}
 					]
 				}
@@ -41,7 +45,69 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/adyen/payment?value=1.629999999999999893&currency=EUR&encrypted_card_number=adyenan0_1_1%24ChDfUTFjWybsSThnhb5Yqs5ENNK2hjuOhtOPOO5snC%2F%2FQJydVY2mbzShVyIRmboLEzgrKVuf7eiFNaa5P4B%2FWK1WB%2FjUwj%2FcInHjvVDZ1dCvEnTnPF27GGZWk7FSCwiQmg%2BIc0S65FVJfvnr09KR2c54rC8HPEWRXGYvAR5w%2FANdDRmJIPlXMLy9I7M2FYFiz%2FhU1MN7J80Al0k3%2B4o%2FQ5zQkLdZGiCv6Yus3lpOSG8bvhcUAHIDarw930GVMxHmWPrDpBHz7eh6nP4%2BxwV6%2B0B8FgPqrH2TMz0rSPbPcq%2Bw4W%2BXgsgKZvpDUeZx5QiDsKFqsuoLZ%2BaXQrcgtJxrDQ%3D%3D%24xqW5bKRKXzxW1gugWQxsQ9gln%2B9fSqgGu9gL4Nx12tUj990rqSscDChIYxMfKVCag5mUo0KezyLAvYa8q9sbI11LDyjQ0POqXzWmObkUlp5yixwhVFYURp6fymnh&encrypted_expiry_month=adyenan0_1_1%24EWEHpgK1OgBVQ9Rt%2BqTgaRf9vBo4w%2F9qTYqL22jJz8VnVQfmejkROceeEKtu9ACVRhw0v34889vRnSg%2FQrlvKqi4693fDiLfcyNmiBv7%2Fx9%2ByzzmkOOpAZBYIYlhXsZrSa6N12PCavXPyVyrAF1YOzlSYhTUm4qEWnz2tvIkmwwj9PR85H0kNOGo%2BnnRnJRh4GskIpiFCtaQOn2getBKCktNhU2Sld5ZONPSnA6bxWxbTPUVYcfmmabF3SmDOmCzzZoLQsEp%2BtKgFubBBnhyuj7VS45E%2F%2FGyFdcUI1GzNjeVVqbEBPZRoV4qbJzUL9VjAuNWgI0t8iNZ8M9qbE1IQA%3D%3D%24DabtDNn3sel5miSCfU%2FDZ4bH8%2BzaAfVBxanzAMiw6xa3If%2B2walNyJa2zH2l30cukkbSJMt7pOBFkDl%2FHhSzqxzZOzyJWME9uu292uK9NS2PUYNS&encrypted_expiry_year=adyenan0_1_1%24AIqQfCEtwPuSYrdt%2BgBD2QHm4T4N03l4xwNWKPLbgY3ZfUaBDOyNtOGjc5FpyP%2BojR6C%2B9fV%2FpkE6iPp0xMGVANt%2BSwQf75M8ViPAbE2J%2Bb1ecC1JMlddyFjg5UHg5nirGStESawbRXLigCU6cfkZ5xdKgy61x7LyJ97DYctsIC%2BkXT4ijO%2BO78WVHFjAX1Gtrm1nIb1DZjsuiBJfGjQ0jrLpjZuzSQiw3Lq7znIy9YxOWuCGDy%2Bp6pcz1QzNh4RLCIk3OiEV5bfLT0CYpH591EIip98FLIkrzQLPGr3JoJfQHp9kGl4x0qqPwIh1eoYbQOvL57VvxUpKB0CO0tiMA%3D%3D%24plinNA5ZSTdetBJgkSA9qQ%2BniSG6HYrRyXwZHTvjZRGIsP7HhZpwjytfFsPN5mzynEl%2Bo2wya4%2FpPhwTsH2ViFUg8%2B9j9VCNaTVyPk865UxxmOg8bg%3D%3D&encrypted_security_code=adyenan0_1_1%24BvDaT%2BiYPHDkOarMw3zIPAuuEZpTEevUzxikkLxW7ya4maUG7DMb2twnblk1zomPtpBr%2FkeWe%2FUNdlyYOlH%2FgX0zcr%2Bf3iKJP%2FeK5dRlyBgPHkoUERkcdGH9oBMhjvsyzGivBfeY5KJXUjIakgdscB60%2F20qhPjXiDq4qbTDg0B0mywgrP2UJpLc9F7Uj%2FBW%2Bqqu4WX5ImzTzeMNGFhwpx8ktTC412viMnOzIDYop9s7XzNq%2B49EWwE7esAQ8rOkHeXRkBA%2B0A1P%2F0mlKLbS%2Fg1IPkNiRSFwky7bSWaAdjzJ5WDiGHIdzhuvkgqj3mcbmQ5KfeUHxdwKaxBpQ64zww%3D%3D%24Yw7Oy7QGQ3IWr1CvkZnUdoEBrFcnvYNkI%2FlNwpgbNSVB0nql9mQx%2FODoD5g4cyRThCd2gg01%2BPIvRNbC27WNp398Pdmcypja%2BV2023s%3D&reference=TEST_TIAGO_1&type=CREDIT_CARD&store_details=true&shopper_reference=0xbb83e699f1188baabea820ce02995c97bd9b510f",
+					"raw": "http://localhost:8080/adyen/payment?value=1.629999999999999893&currency=EUR&encrypted_card_number=adyenan0_1_1%24ngeAKuTwRXyM2t643g57DLuSPfu9eRa1g%2Frh4GyWoS9O5AIB21WBoJfV80lnjIHgNUEHfCUGygted1nessngXyxRlDKX0nUQ79JR38vqZ9UcIqkH%2F0trP2e7oB8lGma4UV%2FfsBok9555TdmWNmnHhg%2BAL1QaViO%2FqQgjkEeedkK84RJrvZYaAqETSYNozyva9RpINCVLDnc2A5Pb5JmaoveV86Nihk5l0hMSwd1EXzNLrkukagvSoCRFLP0SxCFtv%2FBc3tzGxdimTJ5S74U0i37LbhVI1RfqrtzfuUEt9SjZDH9L3ZM4INT1EVdA5fkq5YhIlVPC2TXJuPHywKcOtw%3D%3D%24UN9T94PksI1hMKDUt75Ts3%2FaK%2FNJ6yvp6J6gi4Wu0vMl7nAYsKJ6jPOMlR9FVOaUq21I6Vd2wiIL1KYj5mLcWW2%2BnQ4qiwfjSsMWlCNQeq1L5bJkCihQVbn2KITr&encrypted_expiry_month=adyenan0_1_1%24d%2B1h5bSLjhdFWwJtu9RaImcO0bo97xj0spUDXGx7mtY%2FUn0zJJKmaYjL%2FOTLAEmb5pGrbEeAIySqHLp0kLQb5JsIaOgT0gVmr2CxmkzWtfDGshtrNx4nrBbagxZlgwWsktO%2FlTSiK0tLDNTEasrm7J6ck8v2PF7eDGAAcXADqOnpxT130SAOceGPv1NoQU%2FULVUKdO5GS8N9Q%2B9FQUEJkW%2BvgVTNanVLgH47acOiPDpWYiB944JppD2gRyxt9BExdVAQRguBI%2FsARZqtM4mSGLGlanx0QiS3EBD4F3bRptE3rudbKHKlubJrAwUWD%2BcG4UGRKUtIuI594cRFEnZlwA%3D%3D%249XhZVRrewEORtQeqXHtt5yIaMM0DhlNn3aL4SjjS%2B2EejMVDPmXVEd6%2Bn7El6V7BVLBrPTMXKA01TSKvndphoEmIhipbsNAnCft22r2YxQ%2BpmVB5&encrypted_expiry_year=adyenan0_1_1%24PhPlWK73nLXEoDKS3Fgp3kGaNaR0hz794a%2BA2IyZPjk%2BV41dMvi3H0f8MSXjJB25cjdE7oTFb8tG5e%2BsIpnDZ9O8VqCeu4Uktqp%2FqTRoV1WPWZesRq3pogX%2B9%2FtmSDHxDJw%2Fqxl0wwxduD9nH3o7RlrrnPhRJlnyiyIdsjqLePGyOSJHv1UNVmFTXcYmFNO41mK1s%2FJz52YyULkcu1n1ESTTC47gK2qAQ1O6KqHaqsZE3KrzW8ZweaLJrS8HxFM%2B1UJWU5LWZKVag9gxv%2F2MQt%2BLa%2FPfipzjqFTsfzAKJgNgQp69Lthddul0fwvX6zNJVU9W30gA1oXIpVXJvZ5apg%3D%3D%24tLS8wV%2B1Nm208JbkQL49c0Y9tHNNaYO8FvCbr%2F6gI5sicZgHkBgkfd9NE4PB%2Fnm8c4dD6SLibX%2Fest16ZuW%2FzxPhEP7%2FLPpOYFYS%2F8Rmk%2BXeLnosTg%3D%3D&encrypted_security_code=adyenan0_1_1%24NQ3Ck3aldVFyFugjwhZ1kcCbj%2FOaoO%2BebkSAWzdTVZNqK41Iea5tqhgbTLjJWnwx5RDbWCf3WQiQeFX1jWeHloyeYpNn4bE71GzzG1%2BnxHskR4kkeHp2biRx1lKrE3bSt82YNjq5I%2BuypWl5DOg9GUeFQJsnDv8KuGOzpfqGdgixiKTHcGDfFzeChPjteANdRMXb6eKvyS8lrmuFV3F2wq9yo%2FlBOV05UzxcueA0HL%2FXU3%2Bgo6SIjcYdErVI2goySkp9ZeIgKtwbwxe%2F3jUGG95Motjn8o8AdoXcQCv4G0VoaPFY%2Fd09e7mC8C5a5iUZ4H5wTTuuGzpfJoZgg%2BksLQ%3D%3D%24NYaxcVRjEwO18PEivV1qJ4ge540Uh8sE%2FFHA2j9CYs3aNnQOTBiKoTwmcvulpdXD65KsCyRIZU%2F%2B2ONJBW4hY3nRxIAaKR551h1S%2BuE%3D&reference=TEST_TIAGO_1&type=CREDIT_CARD&wallet.address=0xeee63a4843c9e344c316fa4a056352491cdc9b03&store_details=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"adyen",
+						"payment"
+					],
+					"query": [
+						{
+							"key": "value",
+							"value": "1.629999999999999893"
+						},
+						{
+							"key": "currency",
+							"value": "EUR"
+						},
+						{
+							"key": "encrypted_card_number",
+							"value": "adyenan0_1_1%24ngeAKuTwRXyM2t643g57DLuSPfu9eRa1g%2Frh4GyWoS9O5AIB21WBoJfV80lnjIHgNUEHfCUGygted1nessngXyxRlDKX0nUQ79JR38vqZ9UcIqkH%2F0trP2e7oB8lGma4UV%2FfsBok9555TdmWNmnHhg%2BAL1QaViO%2FqQgjkEeedkK84RJrvZYaAqETSYNozyva9RpINCVLDnc2A5Pb5JmaoveV86Nihk5l0hMSwd1EXzNLrkukagvSoCRFLP0SxCFtv%2FBc3tzGxdimTJ5S74U0i37LbhVI1RfqrtzfuUEt9SjZDH9L3ZM4INT1EVdA5fkq5YhIlVPC2TXJuPHywKcOtw%3D%3D%24UN9T94PksI1hMKDUt75Ts3%2FaK%2FNJ6yvp6J6gi4Wu0vMl7nAYsKJ6jPOMlR9FVOaUq21I6Vd2wiIL1KYj5mLcWW2%2BnQ4qiwfjSsMWlCNQeq1L5bJkCihQVbn2KITr"
+						},
+						{
+							"key": "encrypted_expiry_month",
+							"value": "adyenan0_1_1%24d%2B1h5bSLjhdFWwJtu9RaImcO0bo97xj0spUDXGx7mtY%2FUn0zJJKmaYjL%2FOTLAEmb5pGrbEeAIySqHLp0kLQb5JsIaOgT0gVmr2CxmkzWtfDGshtrNx4nrBbagxZlgwWsktO%2FlTSiK0tLDNTEasrm7J6ck8v2PF7eDGAAcXADqOnpxT130SAOceGPv1NoQU%2FULVUKdO5GS8N9Q%2B9FQUEJkW%2BvgVTNanVLgH47acOiPDpWYiB944JppD2gRyxt9BExdVAQRguBI%2FsARZqtM4mSGLGlanx0QiS3EBD4F3bRptE3rudbKHKlubJrAwUWD%2BcG4UGRKUtIuI594cRFEnZlwA%3D%3D%249XhZVRrewEORtQeqXHtt5yIaMM0DhlNn3aL4SjjS%2B2EejMVDPmXVEd6%2Bn7El6V7BVLBrPTMXKA01TSKvndphoEmIhipbsNAnCft22r2YxQ%2BpmVB5"
+						},
+						{
+							"key": "encrypted_expiry_year",
+							"value": "adyenan0_1_1%24PhPlWK73nLXEoDKS3Fgp3kGaNaR0hz794a%2BA2IyZPjk%2BV41dMvi3H0f8MSXjJB25cjdE7oTFb8tG5e%2BsIpnDZ9O8VqCeu4Uktqp%2FqTRoV1WPWZesRq3pogX%2B9%2FtmSDHxDJw%2Fqxl0wwxduD9nH3o7RlrrnPhRJlnyiyIdsjqLePGyOSJHv1UNVmFTXcYmFNO41mK1s%2FJz52YyULkcu1n1ESTTC47gK2qAQ1O6KqHaqsZE3KrzW8ZweaLJrS8HxFM%2B1UJWU5LWZKVag9gxv%2F2MQt%2BLa%2FPfipzjqFTsfzAKJgNgQp69Lthddul0fwvX6zNJVU9W30gA1oXIpVXJvZ5apg%3D%3D%24tLS8wV%2B1Nm208JbkQL49c0Y9tHNNaYO8FvCbr%2F6gI5sicZgHkBgkfd9NE4PB%2Fnm8c4dD6SLibX%2Fest16ZuW%2FzxPhEP7%2FLPpOYFYS%2F8Rmk%2BXeLnosTg%3D%3D"
+						},
+						{
+							"key": "encrypted_security_code",
+							"value": "adyenan0_1_1%24NQ3Ck3aldVFyFugjwhZ1kcCbj%2FOaoO%2BebkSAWzdTVZNqK41Iea5tqhgbTLjJWnwx5RDbWCf3WQiQeFX1jWeHloyeYpNn4bE71GzzG1%2BnxHskR4kkeHp2biRx1lKrE3bSt82YNjq5I%2BuypWl5DOg9GUeFQJsnDv8KuGOzpfqGdgixiKTHcGDfFzeChPjteANdRMXb6eKvyS8lrmuFV3F2wq9yo%2FlBOV05UzxcueA0HL%2FXU3%2Bgo6SIjcYdErVI2goySkp9ZeIgKtwbwxe%2F3jUGG95Motjn8o8AdoXcQCv4G0VoaPFY%2Fd09e7mC8C5a5iUZ4H5wTTuuGzpfJoZgg%2BksLQ%3D%3D%24NYaxcVRjEwO18PEivV1qJ4ge540Uh8sE%2FFHA2j9CYs3aNnQOTBiKoTwmcvulpdXD65KsCyRIZU%2F%2B2ONJBW4hY3nRxIAaKR551h1S%2BuE%3D"
+						},
+						{
+							"key": "reference",
+							"value": "TEST_TIAGO_1"
+						},
+						{
+							"key": "type",
+							"value": "CREDIT_CARD"
+						},
+						{
+							"key": "wallet.address",
+							"value": "0xeee63a4843c9e344c316fa4a056352491cdc9b03"
+						},
+						{
+							"key": "store_details",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make Credit Card Payment Token OK",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/adyen/payment?value=1.629999999999999893&currency=EUR&encrypted_card_number=adyenan0_1_1%24ChDfUTFjWybsSThnhb5Yqs5ENNK2hjuOhtOPOO5snC%2F%2FQJydVY2mbzShVyIRmboLEzgrKVuf7eiFNaa5P4B%2FWK1WB%2FjUwj%2FcInHjvVDZ1dCvEnTnPF27GGZWk7FSCwiQmg%2BIc0S65FVJfvnr09KR2c54rC8HPEWRXGYvAR5w%2FANdDRmJIPlXMLy9I7M2FYFiz%2FhU1MN7J80Al0k3%2B4o%2FQ5zQkLdZGiCv6Yus3lpOSG8bvhcUAHIDarw930GVMxHmWPrDpBHz7eh6nP4%2BxwV6%2B0B8FgPqrH2TMz0rSPbPcq%2Bw4W%2BXgsgKZvpDUeZx5QiDsKFqsuoLZ%2BaXQrcgtJxrDQ%3D%3D%24xqW5bKRKXzxW1gugWQxsQ9gln%2B9fSqgGu9gL4Nx12tUj990rqSscDChIYxMfKVCag5mUo0KezyLAvYa8q9sbI11LDyjQ0POqXzWmObkUlp5yixwhVFYURp6fymnh&encrypted_expiry_month=adyenan0_1_1%24EWEHpgK1OgBVQ9Rt%2BqTgaRf9vBo4w%2F9qTYqL22jJz8VnVQfmejkROceeEKtu9ACVRhw0v34889vRnSg%2FQrlvKqi4693fDiLfcyNmiBv7%2Fx9%2ByzzmkOOpAZBYIYlhXsZrSa6N12PCavXPyVyrAF1YOzlSYhTUm4qEWnz2tvIkmwwj9PR85H0kNOGo%2BnnRnJRh4GskIpiFCtaQOn2getBKCktNhU2Sld5ZONPSnA6bxWxbTPUVYcfmmabF3SmDOmCzzZoLQsEp%2BtKgFubBBnhyuj7VS45E%2F%2FGyFdcUI1GzNjeVVqbEBPZRoV4qbJzUL9VjAuNWgI0t8iNZ8M9qbE1IQA%3D%3D%24DabtDNn3sel5miSCfU%2FDZ4bH8%2BzaAfVBxanzAMiw6xa3If%2B2walNyJa2zH2l30cukkbSJMt7pOBFkDl%2FHhSzqxzZOzyJWME9uu292uK9NS2PUYNS&encrypted_expiry_year=adyenan0_1_1%24AIqQfCEtwPuSYrdt%2BgBD2QHm4T4N03l4xwNWKPLbgY3ZfUaBDOyNtOGjc5FpyP%2BojR6C%2B9fV%2FpkE6iPp0xMGVANt%2BSwQf75M8ViPAbE2J%2Bb1ecC1JMlddyFjg5UHg5nirGStESawbRXLigCU6cfkZ5xdKgy61x7LyJ97DYctsIC%2BkXT4ijO%2BO78WVHFjAX1Gtrm1nIb1DZjsuiBJfGjQ0jrLpjZuzSQiw3Lq7znIy9YxOWuCGDy%2Bp6pcz1QzNh4RLCIk3OiEV5bfLT0CYpH591EIip98FLIkrzQLPGr3JoJfQHp9kGl4x0qqPwIh1eoYbQOvL57VvxUpKB0CO0tiMA%3D%3D%24plinNA5ZSTdetBJgkSA9qQ%2BniSG6HYrRyXwZHTvjZRGIsP7HhZpwjytfFsPN5mzynEl%2Bo2wya4%2FpPhwTsH2ViFUg8%2B9j9VCNaTVyPk865UxxmOg8bg%3D%3D&encrypted_security_code=adyenan0_1_1%24BvDaT%2BiYPHDkOarMw3zIPAuuEZpTEevUzxikkLxW7ya4maUG7DMb2twnblk1zomPtpBr%2FkeWe%2FUNdlyYOlH%2FgX0zcr%2Bf3iKJP%2FeK5dRlyBgPHkoUERkcdGH9oBMhjvsyzGivBfeY5KJXUjIakgdscB60%2F20qhPjXiDq4qbTDg0B0mywgrP2UJpLc9F7Uj%2FBW%2Bqqu4WX5ImzTzeMNGFhwpx8ktTC412viMnOzIDYop9s7XzNq%2B49EWwE7esAQ8rOkHeXRkBA%2B0A1P%2F0mlKLbS%2Fg1IPkNiRSFwky7bSWaAdjzJ5WDiGHIdzhuvkgqj3mcbmQ5KfeUHxdwKaxBpQ64zww%3D%3D%24Yw7Oy7QGQ3IWr1CvkZnUdoEBrFcnvYNkI%2FlNwpgbNSVB0nql9mQx%2FODoD5g4cyRThCd2gg01%2BPIvRNbC27WNp398Pdmcypja%2BV2023s%3D&reference=TEST_TIAGO_1&type=CREDIT_CARD&store_details=true&wallet.address=0xbb83e699f1188baabea820ce02995c97bd9b510f&token=0xbb83e699f1188baabea820ce02995c97bd9b510f",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -89,7 +155,11 @@
 							"value": "true"
 						},
 						{
-							"key": "shopper_reference",
+							"key": "wallet.address",
+							"value": "0xbb83e699f1188baabea820ce02995c97bd9b510f"
+						},
+						{
+							"key": "token",
 							"value": "0xbb83e699f1188baabea820ce02995c97bd9b510f"
 						}
 					]
@@ -231,6 +301,33 @@
 						"adyen",
 						"payment",
 						"details"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Disable Stored Payments",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/adyen/payment/disable?wallet.address=0xeee63a4843c9e344c316fa4a056352491cdc9b03",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"adyen",
+						"payment",
+						"disable"
+					],
+					"query": [
+						{
+							"key": "wallet.address",
+							"value": "0xeee63a4843c9e344c316fa4a056352491cdc9b03"
+						}
 					]
 				}
 			},
