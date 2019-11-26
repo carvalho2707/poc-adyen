@@ -20,7 +20,7 @@ class AdyenController {
     fun getPaymentMethods(
             @RequestParam("value") value: BigDecimal,
             @RequestParam("currency") currency: String,
-            @RequestParam("wallet.address") walletAddress: String?
+            @RequestParam("wallet.address") walletAddress: String
     ): PaymentMethodsResponse? {
         return adyenService.getPaymentMethods(value, currency, walletAddress)
     }
@@ -36,8 +36,9 @@ class AdyenController {
             @RequestParam(value = "reference", required = true) reference: String,
             @RequestParam(value = "type", required = true) type: PaymentMethodType,
             @RequestParam(value = "redirect_url") redirectUrl: String?,
-            @RequestParam(value = "wallet.address") walletAddress: String?,
-            @RequestParam(value = "token") token: String?
+            @RequestParam(value = "wallet.address") walletAddress: String,
+            @RequestParam(value = "token") token: String?,
+            @RequestParam(value = "store_details") storeDetails: Boolean?
     ): PaymentResult {
         return adyenService.makePayment(
                 value,
@@ -50,13 +51,19 @@ class AdyenController {
                 reference,
                 redirectUrl,
                 walletAddress,
-                token
+                token,
+                storeDetails
         )
     }
 
     @PostMapping("payment/details", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun updatePayment(@RequestBody body: MultiValueMap<String, String>): PaymentResult {
         return adyenService.updatePayment(body)
+    }
+
+    @PostMapping("payment/disable")
+    fun disableStoredPayments(@RequestParam(value = "wallet.address") walletAddress: String) {
+        return adyenService.disableStoredPayments(walletAddress)
     }
 
 }

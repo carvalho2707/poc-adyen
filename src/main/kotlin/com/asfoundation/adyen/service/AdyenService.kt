@@ -4,7 +4,9 @@ import com.adyen.Client
 import com.adyen.enums.Environment
 import com.adyen.model.Amount
 import com.adyen.model.checkout.*
+import com.adyen.model.recurring.DisableRequest
 import com.adyen.service.Checkout
+import com.adyen.service.Recurring
 import com.asfoundation.adyen.config.AppProperties
 import com.asfoundation.adyen.model.PaymentMethodType
 import com.asfoundation.adyen.model.PaymentResult
@@ -20,7 +22,7 @@ class AdyenService {
     @Autowired
     lateinit var appProperties: AppProperties
 
-    fun getPaymentMethods(value: BigDecimal, currency: String, walletAddress: String?): PaymentMethodsResponse {
+    fun getPaymentMethods(value: BigDecimal, currency: String, walletAddress: String): PaymentMethodsResponse {
         val client = Client(appProperties.apiKey, Environment.TEST)
         val checkout = Checkout(client)
 
@@ -28,10 +30,7 @@ class AdyenService {
         paymentMethodsRequest.merchantAccount = appProperties.apiMerchant
         paymentMethodsRequest.countryCode = "PT"
         paymentMethodsRequest.channel = PaymentMethodsRequest.ChannelEnum.ANDROID
-
-        walletAddress?.let {
-            paymentMethodsRequest.shopperReference = it
-        }
+        paymentMethodsRequest.shopperReference = walletAddress
 
         val amount = Amount()
         amount.currency = currency
@@ -51,11 +50,12 @@ class AdyenService {
             paymentMethodType: PaymentMethodType,
             reference: String,
             redirectUrl: String?,
-            walletAddress: String?,
-            token: String?
+            walletAddress: String,
+            token: String?,
+            storeDetails: Boolean?
     ): PaymentResult {
         return when (paymentMethodType) {
-            PaymentMethodType.CREDIT_CARD -> createCreditCardPayment(value, currency, encryptedCardNumber, encryptedExpiryMonth, encryptedExpiryYear, encryptedSecurityCode, reference, walletAddress, token)
+            PaymentMethodType.CREDIT_CARD -> createCreditCardPayment(value, currency, encryptedCardNumber, encryptedExpiryMonth, encryptedExpiryYear, encryptedSecurityCode, reference, walletAddress, token, storeDetails)
             PaymentMethodType.PAYPAL -> createPayPalPayment(value, currency, reference, redirectUrl)
         }
     }
@@ -68,8 +68,9 @@ class AdyenService {
             encryptedExpiryYear: String?,
             encryptedSecurityCode: String?,
             reference: String,
-            walletAddress: String?,
-            recurringDetailReference: String?
+            walletAddress: String,
+            token: String?,
+            storeDetails: Boolean?
     ): PaymentResult {
         val client = Client(appProperties.apiKey, Environment.TEST)
         val checkout = Checkout(client)
@@ -77,21 +78,22 @@ class AdyenService {
         val paymentsRequest = PaymentsRequest()
         paymentsRequest.merchantAccount = appProperties.apiMerchant
         paymentsRequest.reference = reference
+        paymentsRequest.shopperReference = walletAddress
         paymentsRequest.addEncryptedCardData(
                 encryptedCardNumber,
                 encryptedExpiryMonth,
                 encryptedExpiryYear,
                 encryptedSecurityCode,
                 HOLDER_NAME,
-                walletAddress != null
+                storeDetails ?: false
         )
 
-        paymentsRequest.shopperReference = walletAddress
+        paymentsRequest.storePaymentMethod = storeDetails ?: false
 
-        if (walletAddress != null && recurringDetailReference != null) {
+        if (token != null) {
             paymentsRequest.shopperInteraction = PaymentsRequest.ShopperInteractionEnum.CONTAUTH
             paymentsRequest.recurringProcessingModel = PaymentsRequest.RecurringProcessingModelEnum.CARD_ON_FILE
-            (paymentsRequest.paymentMethod as DefaultPaymentMethodDetails).recurringDetailReference = recurringDetailReference
+            (paymentsRequest.paymentMethod as DefaultPaymentMethodDetails).recurringDetailReference = token
         }
 
         val amount = Amount()
@@ -158,6 +160,21 @@ class AdyenService {
 
         val paymentsResponse = checkout.paymentsDetails(paymentsDetailsRequest)
         return createPayPalResponse(paymentsResponse)
+    }
+
+    fun disableStoredPayments(walletAddress: String) {
+        val client = Client(appProperties.apiKey, Environment.TEST)
+        val recurring = Recurring(client)
+
+        val disableRequest = DisableRequest()
+        disableRequest.merchantAccount = appProperties.apiMerchant
+        disableRequest.shopperReference = walletAddress
+        disableRequest.contract = "ONECLICK,RECURRING"
+
+        val disableResult = recurring.disable(disableRequest)
+        if (disableResult.response != "[all-details-successfully-disabled]") {
+            throw Exception("Failed to delete stored payments")
+        }
     }
 
     companion object {
