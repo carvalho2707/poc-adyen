@@ -5,8 +5,10 @@ import com.adyen.enums.Environment
 import com.adyen.model.Amount
 import com.adyen.model.checkout.*
 import com.adyen.model.recurring.DisableRequest
+import com.adyen.model.recurring.DisableResult
 import com.adyen.service.Checkout
 import com.adyen.service.Recurring
+import com.adyen.service.exception.ApiException
 import com.asfoundation.adyen.config.AppProperties
 import com.asfoundation.adyen.model.PaymentMethodType
 import com.asfoundation.adyen.model.PaymentResult
@@ -171,9 +173,16 @@ class AdyenService {
         disableRequest.shopperReference = walletAddress
         disableRequest.contract = "ONECLICK,RECURRING"
 
-        val disableResult = recurring.disable(disableRequest)
-        if (disableResult.response != "[all-details-successfully-disabled]") {
-            throw Exception("Failed to delete stored payments")
+        val disableResult: DisableResult?
+        try {
+            disableResult = recurring.disable(disableRequest)
+            if (disableResult.response != "[all-details-successfully-disabled]") {
+                throw Exception("Failed to delete stored payments")
+            }
+        } catch (e: ApiException) {
+            if (e.statusCode != 422 && e.error.errorCode != "800") {
+                throw e
+            }
         }
     }
 
