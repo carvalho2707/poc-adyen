@@ -93,7 +93,7 @@ class AdyenService {
         paymentsRequest.storePaymentMethod = storeDetails ?: false
 
         if (token != null) {
-            paymentsRequest.shopperInteraction = PaymentsRequest.ShopperInteractionEnum.CONTAUTH
+            paymentsRequest.shopperInteraction = PaymentsRequest.ShopperInteractionEnum.ECOMMERCE
             paymentsRequest.recurringProcessingModel = PaymentsRequest.RecurringProcessingModelEnum.CARD_ON_FILE
             (paymentsRequest.paymentMethod as DefaultPaymentMethodDetails).recurringDetailReference = token
         }
